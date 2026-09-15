@@ -1,0 +1,25 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mannschaft</title><link rel="stylesheet" href="assets/css/style.css"></head><body><header class="topbar"><div class="container header"><a class="brand" href="index.html"><div class="brand-logos"><img src="assets/img/ts-logo.png"><img src="assets/img/sg-logo.png"></div><div class="brand-text"><strong>Handball in Evingsen</strong><span>TS Evingsen · SG Evingsen–Ihmert</span></div></a><nav class="nav"><a href="index.html">Startseite</a><a href="mannschaften.html">Mannschaften</a><a href="spiele.html">Spiele</a><a href="aktuelles.html">Aktuelles</a><a href="admin.html">Verwaltung</a></nav><button class="menu-btn">☰</button></div><div class="container mobile-menu"><a href="index.html">Startseite</a><a href="mannschaften.html">Mannschaften</a><a href="spiele.html">Spiele</a><a href="aktuelles.html">Aktuelles</a><a href="admin.html">Verwaltung</a></div></header><div class="page-hero"><div class="container team-hero"><div><div class="kicker" id="org"></div><h1 id="teamName">Mannschaft</h1></div><img id="teamLogo" style="max-height:140px;margin-left:auto"></div></div><section><div class="container"><div id="teamPhoto" class="placeholder" style="aspect-ratio:16/6">BILDPLATZHALTER · Mannschaftsfoto</div><div class="team-meta"><div class="meta"><div class="eyebrow">Training</div><strong id="training"></strong></div><div class="meta"><div class="eyebrow">Ansprechpartner</div><strong id="coach"></strong></div></div></div></section><section style="background:#f7f9fc"><div class="container grid-2"><div><h2>Spielberichte</h2><div id="teamNews" class="news-list" style="margin-top:20px"></div></div><div><h2>Nächste Spiele</h2><div id="teamGames" class="game-list" style="margin-top:20px"></div></div></div></section><footer class="footer"><div class="container footer-grid"><div><div class="brand-logos"><img src="assets/img/ts-logo.png"><img src="assets/img/sg-logo.png"></div><p><strong>Handball in Evingsen</strong><br><small>TS Evingsen · SG Evingsen–Ihmert</small></p></div><div><strong>Navigation</strong><br><small>Startseite · Mannschaften · Spiele · Aktuelles</small></div><div><strong>Demo</strong><br><small>Inhalte lassen sich über die Verwaltung lokal ändern.</small></div></div></footer><script src="assets/js/data.js"></script><script src="assets/js/site.js"></script><script>const id=new URLSearchParams(location.search).get('id')||'1-herren',t=TEAMS.find(x=>x.id===id)||TEAMS[0];teamName.textContent=t.name;org.textContent=t.org;training.textContent=t.training||'–';coach.textContent=t.coach||'–';teamLogo.src=t.logo==='ts'?'assets/img/ts-logo.png':'assets/img/sg-logo.png';if(t.image)teamPhoto.innerHTML=`<img src="${t.image}" style="width:100%;height:100%;object-fit:cover">`;const tn=NEWS.filter(n=>n.team===t.name);teamNews.innerHTML=tn.map(n=>`<article class="news-card"><div class="placeholder">${String(n.image||'').startsWith('data:')?`<img src="${n.image}" style="width:100%;height:100%;object-fit:cover">`:n.image}</div><div class="news-body"><div class="eyebrow">${n.date}</div><h3>${n.title}</h3><p>${n.text}</p></div></article>`).join('')||'<div class="panel" style="padding:20px">Noch kein Bericht.</div>';const tg=GAMES.filter(g=>g.team===t.name);teamGames.innerHTML=tg.map(g=>`<article class="game-card"><div class="game-top"><span>${g.date} · ${g.time} Uhr</span><span class="status ${g.status||'geplant'}">${g.status||'geplant'}</span></div><div class="match">${g.home} – ${g.away}</div><div class="place">📍 ${g.place}</div></article>`).join('')||'<div class="panel" style="padding:20px">Keine Spiele eingetragen.</div>';</script>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{
+    const teamId=new URLSearchParams(location.search).get('id');
+    const team=(window.TEAMS||[]).find(t=>t.id===teamId);
+    if(!team) return;
+    const teamGames=(window.GAMES||[]).filter(g=>g.team===team.name);
+    const cards=[...document.querySelectorAll('.game-card')];
+    cards.forEach((card,i)=>{
+      const g=teamGames[i];
+      if(!g || g.status!=='beendet' || g.homeScore==='' || g.awayScore==='' || g.homeScore===undefined || g.awayScore===undefined) return;
+      if(card.querySelector('.game-result')) return;
+      const strong=card.querySelector('strong');
+      if(!strong) return;
+      const r=document.createElement('div');
+      r.className='game-result';
+      r.textContent=`${g.homeScore} : ${g.awayScore}`;
+      strong.insertAdjacentElement('afterend',r);
+    });
+  },0);
+});
+</script>
+
+</body></html>
